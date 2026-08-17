@@ -106,7 +106,7 @@ runs:
         SCHEMA=$(cat "$GITHUB_ACTION_PATH/schema.json" | jq -c .)
         echo "value=$SCHEMA" >> "$GITHUB_OUTPUT"
 
-    - uses: anthropics/claude-code-action/base-action@8341a564b0c1693e9fa29c681852ee3714980098 # v1.0.33
+    - uses: anthropics/claude-code-action/base-action@b47fd721da662d48c5680e154ad16a73ed74d2e0 # v1.0.93
       id: claude
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
@@ -138,9 +138,11 @@ runs:
               - Identify target packages and version changes
 
           2. **Release Content Investigation**
-              - Review release notes and CHANGELOG of the target package
-              - Understand breaking changes, new features, and bug fixes
-              - Check for security-related fixes
+              - Gather as much information as possible about the changes in the target package from all available resources (e.g., release notes, CHANGELOG, migration guides, official documentation, related Issues/Discussions/Pull Requests, source code diff between versions)
+              - Based on the investigation, understand the following:
+                - Breaking changes and new features
+                - Bug fixes and security-related fixes
+                - Required migration steps
 
           3. **Codebase Impact Analysis**
               - Search for usage locations of the target package in the current codebase
@@ -163,21 +165,20 @@ runs:
           ### ⚖️ Safety Assessment: [✅ Safe | ⚠️ Needs Manual Migration | ❌ Not Safe]
 
           ### 🔍 Release Content Analysis
-          - [Major changes]
-          - [Breaking changes]
-          - [Security fixes]
+          - [Breaking changes and new features]
+          - [Bug fixes and security-related fixes]
 
           ### 🎯 Impact Scope Investigation
           - [Usage location identification results]
           - [Impact on other dependencies]
 
           ### 💡 Recommended Actions
+          - [Required migration steps]
           - [Required modification work]
           - [Specific response methods]
 
           ### 🔗 Reference Links
-          - [Release notes]
-          - [CHANGELOG]
+          - [Links to resources referenced during investigation]
           ```
 
           **IMPORTANT**: Output the report in the `report` field and the safety assessment value in the `safety_assessment` field of the JSON schema provided. The report content should be in Markdown format as specified above. The safety_assessment must be exactly one of: "safe", "needs-manual-migration", or "not-safe".
@@ -203,7 +204,7 @@ runs:
       run: echo "$REPORT" >> "$GITHUB_STEP_SUMMARY"
     - name: Get denied tools
       id: denied-tools
-      uses: koki-develop/claude-denied-tools@543cd548bd3bd1dd1c3b0be3b96887c8b01725df # v1.1.3
+      uses: koki-develop/claude-denied-tools@8ec14d478d2ab6febe57d23ddf9f7bde69766669 # v1.2.0
       with:
         github-token: ${{ inputs.github-token }}
         claude-code-execution-file: ${{ steps.claude.outputs.execution_file }}
